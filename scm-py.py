@@ -2,12 +2,6 @@ import os
 import platform
 import subprocess
 import sys
-import termios
-import tty
-import requests
-from tqdm import tqdm
-from PIL import Image
-from io import BytesIO
 
 def get_key():
     fd = sys.stdin.fileno()
@@ -43,7 +37,13 @@ def check_and_install_modules():
 
 check_and_install_modules()
 
+import termios
 from tqdm import tqdm
+import requests
+from tqdm import tqdm
+from PIL import Image
+from io import BytesIO
+import tty
 
 ASCII_ART = r"""
   /$$$$$$$  /$$$$$$$ /$$$$$$/$$$$           /$$$$$$  /$$   /$$
