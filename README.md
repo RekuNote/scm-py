@@ -1,7 +1,7 @@
 
 <div align="center">
   <a href="https://github.com/RekuNote/scm-py/">
-    <img src="logo.jpeg" alt="Logo" height="80">
+    <img src="logo.png" alt="Logo" height="80">
   </a>
 
   <h3 align="center">scm-py</h3>
