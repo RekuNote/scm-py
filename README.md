@@ -7,7 +7,7 @@
   <h3 align="center">scm-py</h3>
 
   <p align="center">
-    scm-py is a python client for downloading BRSTM files from Smash Custom Music Archive (smashcustommusic.net)
+    scm-py is a python port of <a href="https://www.github.com/RekuNote/scm-cli">scm-cli</a> for downloading BRSTM files from Smash Custom Music Archive (smashcustommusic.net)
     <br />
     © RekuBuild 2024
     <br />
