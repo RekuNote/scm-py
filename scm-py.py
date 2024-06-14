@@ -24,7 +24,6 @@ def check_and_install_modules():
     check_and_install_module("requests")
     check_and_install_module("PIL")
     check_and_install_module("tqdm")
-    check_and_install_module("keyboard")
 
 check_and_install_modules()
 
@@ -32,10 +31,6 @@ check_and_install_modules()
 from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
-import keyboard
-
-def get_key():
-    return keyboard.read_event().name
 
 ASCII_ART = r"""
 
@@ -49,7 +44,8 @@ ASCII_ART = r"""
                                           | $$      |  $$$$$$/
 by lexi/rekushi <3                        |__/       \______/ 
 
-------------------------------------------------------------"""
+------------------------------------------------------------
+"""
 
 BASE_URL = "https://www.smashcustommusic.net/json"
 HEADERS = {"User-Agent": "scm-py/0.1"}
@@ -74,7 +70,6 @@ Would you like to install scm-cli? Y/N
 """
     print(message)
     choice = input().strip().lower()
-    print(choice.upper())  # Show the key press for clarity
     if choice == 'y':
         subprocess.run("curl -sL https://raw.githubusercontent.com/RekuNote/scm-cli/main/install.sh | bash", shell=True)
         print("\nTo run scm-cli, run the command:\nscm-cli")
@@ -127,7 +122,7 @@ def list_games():
             print("U to Check for Updates")
             print()
 
-            next_page_key = get_key().upper()
+            next_page_key = input().strip().upper()
             
             if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
@@ -178,7 +173,7 @@ def search_games():
                 print("G to Select Game")
                 print()
 
-                search_page_key = get_key().upper()
+                search_page_key = input().strip().upper()
                 
                 if search_page_key == "N" and page + 1 < total_pages:
                     page += 1
@@ -227,7 +222,7 @@ def search_songs(game_id):
             print("S to Select Song")
             print()
 
-            next_page_key = get_key().upper()
+            next_page_key = input().strip().upper()
             
             if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
@@ -288,7 +283,7 @@ def show_track_info(song_id):
         print("D for Download Options")
         print()
 
-        user_input = get_key().upper()
+        user_input = input().strip().upper()
 
         if user_input == "D":
             display_ascii_art()
@@ -303,7 +298,7 @@ def show_track_info(song_id):
             print("X to Exit")
             print()
 
-            download_option = get_key().upper()
+            download_option = input().strip().upper()
 
             download_formats = {
                 "1": "brstm",
@@ -367,7 +362,7 @@ def download_file(song_id, download_format):
             output_file = new_output_file
         
         print(f"File downloaded successfully to {output_file}. Press any key to return.")
-        get_key()
+        input()  # Wait for any key press
         show_track_info(song_id)
     except requests.exceptions.RequestException as e:
         print(f"Download failed: {e}")
@@ -375,8 +370,7 @@ def download_file(song_id, download_format):
 def check_for_updates():
     display_ascii_art()
     print("Would you like to check for updates? Y/N")
-    update_choice = get_key().lower()
-    print(update_choice.upper())  # Show the key press for clarity
+    update_choice = input().strip().lower()
     if update_choice == 'y':
         current_script_path = os.path.realpath(__file__)
         remote_script_url = "https://raw.githubusercontent.com/RekuNote/scm-py/main/scm-py.py"
@@ -391,8 +385,7 @@ def check_for_updates():
                 list_games()
             else:
                 print("Update found. Would you like to update now? Y/N")
-                confirm_update = get_key().lower()
-                print(confirm_update.upper())  # Show the key press for clarity
+                confirm_update = input().strip().lower()
                 if confirm_update == 'y':
                     update_script_path = os.path.join(os.getcwd(), "update.py")
                     subprocess.run(["curl", "-sL", "https://raw.githubusercontent.com/RekuNote/scm-py/main/update.py", "-o", update_script_path])
