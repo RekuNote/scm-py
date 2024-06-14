@@ -26,6 +26,7 @@
 
 - Supports Windows, Linux, and macOS.
 - List all available games and their corresponding IDs.
+- Search for games by name.
 - Search for songs by game ID.
 - Download BRSTM (or other) files by song ID.
 - Specify output path for downloads.
