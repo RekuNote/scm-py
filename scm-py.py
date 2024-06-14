@@ -76,7 +76,7 @@ def display_ascii_art():
     print("")
 
 def offer_install_scm_cli():
-    message = """You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives updates and new features, while also not depending on Python to run.
+    message = """You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives more frequent updates and features, while also not depending on Python to run.
 
 scm-py is only suggested for use on Windows operating systems.
 
