@@ -6,22 +6,6 @@ import requests
 import hashlib
 import time
 
-if platform.system() == "Windows":
-    import msvcrt
-
-def get_key():
-    if platform.system() == "Windows":
-        return msvcrt.getch().decode('utf-8')
-    else:
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
 def check_and_install_module(module_name):
     try:
         __import__(module_name)
@@ -42,6 +26,7 @@ def check_and_install_modules():
 
 check_and_install_modules()
 
+# Now import the modules after ensuring they are installed
 from tqdm import tqdm
 
 ASCII_ART = r"""
@@ -56,8 +41,7 @@ ASCII_ART = r"""
                                           | $$      |  $$$$$$/
 by lexi/rekushi <3                        |__/       \______/ 
 
-------------------------------------------------------------
-"""
+------------------------------------------------------------"""
 
 BASE_URL = "https://www.smashcustommusic.net/json"
 HEADERS = {"User-Agent": "scm-py/0.1"}
@@ -74,15 +58,14 @@ def display_ascii_art():
     print("")
 
 def offer_install_scm_cli():
-    message = """You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives updates and new features, while also not depending on Python to run.
+    message = """You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives more frequent updates and new features, while also not depending on Python to run.
 
 scm-py is only suggested for use on Windows operating systems.
 
 Would you like to install scm-cli? Y/N
 """
     print(message)
-    choice = get_key().lower()
-    print(choice.upper())  # Show the key press for clarity
+    choice = input().strip().lower()
     if choice == 'y':
         subprocess.run("curl -sL https://raw.githubusercontent.com/RekuNote/scm-cli/main/install.sh | bash", shell=True)
         print("\nTo run scm-cli, run the command:\nscm-cli")
@@ -135,7 +118,7 @@ def list_games():
             print("U to Check for Updates")
             print()
 
-            next_page_key = get_key().upper()
+            next_page_key = input().strip().upper()
             
             if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
@@ -186,7 +169,7 @@ def search_games():
                 print("G to Select Game")
                 print()
 
-                search_page_key = get_key().upper()
+                search_page_key = input().strip().upper()
                 
                 if search_page_key == "N" and page + 1 < total_pages:
                     page += 1
@@ -235,7 +218,7 @@ def search_songs(game_id):
             print("S to Select Song")
             print()
 
-            next_page_key = get_key().upper()
+            next_page_key = input().strip().upper()
             
             if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
