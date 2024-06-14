@@ -4,6 +4,7 @@ import subprocess
 import sys
 import requests
 import hashlib
+import time
 
 def check_and_install_module(module_name):
     try:
@@ -23,6 +24,7 @@ def check_and_install_modules():
     check_and_install_module("requests")
     check_and_install_module("PIL")
     check_and_install_module("tqdm")
+    check_and_install_module("keyboard")
 
 check_and_install_modules()
 
@@ -30,23 +32,10 @@ check_and_install_modules()
 from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
+import keyboard
 
-if platform.system() == "Windows":
-    import msvcrt
-    def get_key():
-        return msvcrt.getch().decode('utf-8')
-else:
-    import termios
-    import tty
-    def get_key():
-        fd = sys.stdin.fileno()
-        old_settings = termios.tcgetattr(fd)
-        try:
-            tty.setraw(fd)
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
+def get_key():
+    return keyboard.read_event().name
 
 ASCII_ART = r"""
 
@@ -398,7 +387,7 @@ def check_for_updates():
             remote_script_hash = calculate_string_hash(response.text)
             if current_script_hash == remote_script_hash:
                 print("You are already running the latest version of scm-py.")
-                import time; time.sleep(2)
+                time.sleep(2)
                 list_games()
             else:
                 print("Update found. Would you like to update now? Y/N")
@@ -408,13 +397,17 @@ def check_for_updates():
                     update_script_path = os.path.join(os.getcwd(), "update.py")
                     subprocess.run(["curl", "-sL", "https://raw.githubusercontent.com/RekuNote/scm-py/main/update.py", "-o", update_script_path])
                     subprocess.run([sys.executable, update_script_path])
+                    sys.exit(0)
                 else:
                     print("Update aborted.")
                     list_games()
         else:
             print("Error: Unable to check for updates.")
+            time.sleep(2)
+            list_games()
     else:
         print("Update check aborted.")
+        time.sleep(2)
         list_games()
 
 # Main script logic
