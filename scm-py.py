@@ -3,6 +3,7 @@ import platform
 import subprocess
 import sys
 import requests
+import hashlib
 from tqdm import tqdm
 
 # Check if required modules are installed, and install them if necessary
@@ -91,6 +92,20 @@ Would you like to install scm-cli? Y/N
         sys.exit(0)
     elif choice == 'n':
         return
+
+def calculate_file_hash(file_path):
+    """Calculate the SHA-256 hash of a file."""
+    sha256_hash = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    return sha256_hash.hexdigest()
+
+def calculate_string_hash(content):
+    """Calculate the SHA-256 hash of a string."""
+    sha256_hash = hashlib.sha256()
+    sha256_hash.update(content.encode('utf-8'))
+    return sha256_hash.hexdigest()
 
 def list_games():
     page = 0
@@ -379,9 +394,9 @@ def check_for_updates():
         response = requests.get(remote_script_url)
         if response.status_code == 200:
             with open(current_script_path, "r") as current_script:
-                current_script_content = current_script.read()
-            remote_script_content = response.text
-            if current_script_content == remote_script_content:
+                current_script_hash = calculate_file_hash(current_script_path)
+            remote_script_hash = calculate_string_hash(response.text)
+            if current_script_hash == remote_script_hash:
                 print("You are already running the latest version of scm-py.")
                 import time; time.sleep(2)
                 list_games()
