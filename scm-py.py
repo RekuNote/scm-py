@@ -4,9 +4,7 @@ import subprocess
 import sys
 import requests
 import hashlib
-from tqdm import tqdm
 
-# Check if required modules are installed, and install them if necessary
 def check_and_install_module(module_name):
     try:
         __import__(module_name)
@@ -28,6 +26,8 @@ def check_and_install_modules():
 
 check_and_install_modules()
 
+# Now import the modules after ensuring they are installed
+from tqdm import tqdm
 from PIL import Image
 from io import BytesIO
 
