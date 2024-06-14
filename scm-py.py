@@ -22,15 +22,12 @@ def check_and_install_module(module_name):
 
 def check_and_install_modules():
     check_and_install_module("requests")
-    check_and_install_module("PIL")
     check_and_install_module("tqdm")
 
 check_and_install_modules()
 
 # Now import the modules after ensuring they are installed
 from tqdm import tqdm
-from PIL import Image
-from io import BytesIO
 
 ASCII_ART = r"""
 
