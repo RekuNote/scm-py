@@ -6,8 +6,6 @@ import termios
 import tty
 import requests
 from tqdm import tqdm
-from PIL import Image
-from io import BytesIO
 
 def get_key():
     fd = sys.stdin.fileno()
@@ -43,9 +41,11 @@ def check_and_install_modules():
 
 check_and_install_modules()
 
-from tqdm import tqdm
+from PIL import Image
+from io import BytesIO
 
 ASCII_ART = r"""
+
   /$$$$$$$  /$$$$$$$ /$$$$$$/$$$$           /$$$$$$  /$$   /$$
  /$$_____/ /$$_____/| $$_  $$_  $$ /$$$$$$ /$$__  $$| $$  | $$
 |  $$$$$$ | $$      | $$ \ $$ \ $$|______/| $$  \ $$| $$  | $$
@@ -54,12 +54,9 @@ ASCII_ART = r"""
 |_______/  \_______/|__/ |__/ |__/        | $$____/  \____  $$
                                           | $$       /$$  | $$
                                           | $$      |  $$$$$$/
-                                          |__/       \______/ 
+by lexi/rekushi <3                        |__/       \______/ 
 
-by lexi/rekushi <3
-
-------------------------------------------------------------
-"""
+------------------------------------------------------------"""
 
 BASE_URL = "https://www.smashcustommusic.net/json"
 HEADERS = {"User-Agent": "scm-py/0.1"}
@@ -76,8 +73,7 @@ def display_ascii_art():
     print("")
 
 def offer_install_scm_cli():
-    message = """
-You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives updates and new features, while also not depending on Python to run.
+    message = """You are using scm-py on a Unix-based operating system, which supports scm-cli. scm-cli is recommended, since it receives updates and new features, while also not depending on Python to run.
 
 scm-py is only suggested for use on Windows operating systems.
 
@@ -103,6 +99,7 @@ def list_games():
         if response.status_code == 200:
             data = response.json()
             game_count = data['game_count']
+            total_pages = (game_count + per_page - 1) // per_page  # Calculate total pages
             games = data['games'][offset:offset + per_page]
             
             if not games:
@@ -111,7 +108,7 @@ def list_games():
             
             display_ascii_art()
             print(f"Total games available: {game_count}\n")
-            print(f"Games (Page {page + 1} of {game_count // per_page + 1}):\n")
+            print(f"Games (Page {page + 1} of {total_pages}):\n")
             for game in games:
                 print(f"{game['game_id']}: {game['game_name']} ({game['song_count']} songs)")
             
@@ -119,11 +116,12 @@ def list_games():
             print("N to show Next Entries")
             print("B to show Previous Entries")
             print("G to Select Game")
+            print("S to Search Game")
             print()
 
             next_page_key = get_key().upper()
             
-            if next_page_key == "N":
+            if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
             elif next_page_key == "B" and page > 0:
                 page -= 1
@@ -131,6 +129,10 @@ def list_games():
                 game_id = input("Insert Game ID, or leave blank to cancel: ").strip()
                 if game_id:
                     search_songs(game_id)
+            elif next_page_key == "S":
+                display_ascii_art()
+                print("Type the name of the game you would like to search for, or leave empty to cancel: ")
+                search_games()
             elif next_page_key == "X":
                 exit(0)
             else:
@@ -138,6 +140,54 @@ def list_games():
         else:
             print("Error: Unable to fetch data from the server.")
             break
+
+def search_games():
+    response = requests.get(f"{BASE_URL}/gamelist/", headers=HEADERS)
+    if response.status_code == 200:
+        data = response.json()
+        game_list = data['games']
+        search_term = input().strip()
+        if search_term:
+            search_results = [game for game in game_list if search_term.lower() in game['game_name'].lower()]
+            search_count = len(search_results)
+            page = 0
+            per_page = 20
+            total_pages = (search_count + per_page - 1) // per_page  # Calculate total pages
+            while True:
+                offset = page * per_page
+                display_ascii_art()
+                print(f"{search_count} results for \"{search_term}\":\n")
+                print(f"Results (Page {page + 1} of {total_pages}):\n")
+                for game in search_results[offset:offset + per_page]:
+                    print(f"{game['game_id']}: {game['game_name']} ({game['song_count']} songs)")
+                
+                print("\nX to Exit")
+                print("R to Return")
+                print("N to show Next Entries")
+                print("B to show Previous Entries")
+                print("G to Select Game")
+                print()
+
+                search_page_key = get_key().upper()
+                
+                if search_page_key == "N" and page + 1 < total_pages:
+                    page += 1
+                elif search_page_key == "B" and page > 0:
+                    page -= 1
+                elif search_page_key == "G":
+                    game_id = input("Insert Game ID, or leave blank to return to the game list: ").strip()
+                    if game_id:
+                        search_songs(game_id)
+                        break
+                elif search_page_key == "R":
+                    list_games()
+                    return
+                elif search_page_key == "X":
+                    exit(0)
+                else:
+                    print("Invalid option. Please try again.")
+    else:
+        print("Error: Unable to fetch data from the server.")
 
 def search_songs(game_id):
     page = 0
@@ -151,10 +201,11 @@ def search_songs(game_id):
             game_name = data['game_name']
             songs = data['songs'][offset:offset + per_page]
             song_count = len(data['songs'])
+            total_pages = (song_count + per_page - 1) // per_page  # Calculate total pages
             
             display_ascii_art()
             print(f"Game: {game_name}\n")
-            print(f"Songs (Page {page + 1} of {song_count // per_page + 1}):\n")
+            print(f"Songs (Page {page + 1} of {total_pages}):\n")
             for song in songs:
                 song_length = song.get('song_length', 'N/A')
                 print(f"{song['song_id']}: {song['song_name']} ({song_length} seconds)")
@@ -168,7 +219,7 @@ def search_songs(game_id):
 
             next_page_key = get_key().upper()
             
-            if next_page_key == "N":
+            if next_page_key == "N" and page + 1 < total_pages:
                 page += 1
             elif next_page_key == "B" and page > 0:
                 page -= 1
@@ -231,13 +282,13 @@ def show_track_info(song_id):
 
         if user_input == "D":
             display_ascii_art()
-            print("Download Options:")
-            print("1 to download BRSTM")
-            print("2 to download BCSTM")
-            print("3 to download BFSTM (Wii U)")
-            print("4 to download BFSTM (Switch)")
-            print("5 to download BWAV")
-            print("6 to download NUS3Audio")
+            print("Download Options:\n")
+            print("1 to Download BRSTM")
+            print("2 to Download BCSTM")
+            print("3 to Download BFSTM (Wii U)")
+            print("4 to Download BFSTM (Switch)")
+            print("5 to Download BWAV")
+            print("6 to Download NUS3Audio")
             print("R to Return")
             print("X to Exit")
             print()
@@ -299,7 +350,15 @@ def download_file(song_id, download_format):
                     bar.update(len(data))
                     f.write(data)
         
-        print(f"Downloaded to: {output_file}")
+        # Rename .sw_bfstm files to .bfstm in /switch directory
+        if download_format == "sw_bfstm":
+            new_output_file = output_file.replace(".sw_bfstm", ".bfstm")
+            os.rename(output_file, new_output_file)
+            output_file = new_output_file
+        
+        print(f"File downloaded successfully to {output_file}. Press any key to return.")
+        get_key()
+        show_track_info(song_id)
     except requests.exceptions.RequestException as e:
         print(f"Download failed: {e}")
 
