@@ -73,7 +73,7 @@ scm-py is only suggested for use on Windows operating systems.
 Would you like to install scm-cli? Y/N
 """
     print(message)
-    choice = get_key().lower()
+    choice = input().strip().lower()
     print(choice.upper())  # Show the key press for clarity
     if choice == 'y':
         subprocess.run("curl -sL https://raw.githubusercontent.com/RekuNote/scm-cli/main/install.sh | bash", shell=True)
