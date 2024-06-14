@@ -35,6 +35,16 @@
 
 - `requests`, `PIL`, and `tqdm` Python modules are required. (When ran, scm-py will automatically check for these modules and prompt to install if not found.)
 
+To install these modules manually, run:
+```sh
+pip3 install requests, pillow, tqdm
+```
+or
+```sh
+pip install requests, pillow, tqdm
+```
+
+
 ## Usage
 
 Download and run scm-py:
