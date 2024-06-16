@@ -15,7 +15,7 @@
   </p>
 </div>
 
-<img src="screenshot.png" alt="Screenshot" height="500">
+<img src="screenshot.png" alt="Screenshot" height="400">
 
 ## Table of Contents
 
