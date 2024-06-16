@@ -15,11 +15,10 @@
   </p>
 </div>
 
-<img src="screenshot.png" alt="Screenshot" height="400">
-
 ## Table of Contents
 
 - [Features](#features)
+- [Screenshots](#screenshots)
 - [Requirements](#requirements)
 - [Usage](#usage)
 - [License](#license)
@@ -32,6 +31,10 @@
 - Search for songs by game ID.
 - Download BRSTM (or other) files by song ID.
 - Specify output path for downloads.
+
+## Screenshots
+
+<img src="screenshot.png" alt="Screenshot" height="400">
 
 ## Requirements
 
