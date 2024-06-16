@@ -2,7 +2,6 @@ import os
 import platform
 import subprocess
 import sys
-import requests
 import hashlib
 import time
 
@@ -27,6 +26,7 @@ def check_and_install_modules():
 check_and_install_modules()
 
 # Now import the modules after ensuring they are installed
+import requests
 from tqdm import tqdm
 
 ASCII_ART = r"""
