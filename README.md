@@ -15,6 +15,8 @@
   </p>
 </div>
 
+<img src="screenshot.png" alt="Screenshot" height="500">
+
 ## Table of Contents
 
 - [Features](#features)
